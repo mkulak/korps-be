@@ -22,6 +22,9 @@ suspend fun main() {
             }
             socket.close()
         }
+        socket.textMessageHandler {
+            println("server received $it")
+        }
     }
     server.listenAwait(8080)
     println("Server listening on http://localhost:8080/")

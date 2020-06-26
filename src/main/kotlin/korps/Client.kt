@@ -2,6 +2,7 @@ package korps
 
 import io.vertx.core.Vertx
 import io.vertx.kotlin.core.http.webSocketAwait
+import kotlin.random.Random
 
 
 suspend fun main() {
@@ -13,6 +14,7 @@ suspend fun main() {
     println("Connected")
     ws.textMessageHandler {
         println("Received: $it")
+        ws.writeTextMessage("client msg ${Random.nextInt(100)}")
     }
     ws.closeHandler {
         println("The end!")
