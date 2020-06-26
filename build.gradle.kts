@@ -6,7 +6,8 @@ plugins {
 }
 
 application {
-    mainClassName = "com.palantir.test.Main"
+//    mainClassName = "com.palantir.test.Main"
+    mainClassName = "korps.MainKt"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
