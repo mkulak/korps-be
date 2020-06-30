@@ -4,6 +4,8 @@ import io.vertx.core.AsyncResult
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpServer
 import io.vertx.core.http.HttpServerRequest
+import io.vertx.kotlin.core.http.listenAwait
+import kotlinx.coroutines.runBlocking
 
 
 //import io.vertx.core.Vertx
@@ -36,17 +38,18 @@ import io.vertx.core.http.HttpServerRequest
 //    println("Server listening on http://localhost:8080/")
 //}
 
-fun main() {
-    println("hello, world!1")
-    Vertx.vertx().createHttpServer().requestHandler { req: HttpServerRequest ->
-        req.response()
-            .putHeader("content-type", "text/plain")
-            .end("Hello from Kotlin Vert.x!")
-    }.listen(8080) { res ->
-        if (res.succeeded()) {
-            println("Server listening on http://localhost:8080/")
-        } else {
-            throw res.cause()
+fun main() = runBlocking {
+    println("hello, world!2")
+    val server = Vertx.vertx().createHttpServer()
+    server.requestHandler { req ->
+        req.response().putHeader("content-type", "text/plain").end("Hello from Kotlin Vert.x!")
+    }
+    server.webSocketHandler { socket ->
+        socket.textMessageHandler {
+            println("server received $it")
+            socket.writeTextMessage(it.reversed())
         }
     }
+    server.listenAwait(8080)
+    println("Server listening on http://localhost:8080/")
 }

@@ -12,10 +12,12 @@
 //    println("Trying to connect")
 //    val ws = client.webSocketAwait(8080, "localhost", "/some-uri")
 //    println("Connected")
+//    ws.writeTextMessage("client msg ${Random.nextInt(100)}")
 //    ws.textMessageHandler {
 //        println("Received: $it")
-//        ws.writeTextMessage("client msg ${Random.nextInt(100)}")
 //    }
+//    ws.close()
+////    ws.writeTextMessage("client msg ${Random.nextInt(100)}")
 //    ws.closeHandler {
 //        println("The end!")
 //        System.exit(0)
