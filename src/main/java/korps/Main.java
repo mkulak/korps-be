@@ -1,9 +1,9 @@
-package com.palantir.test;
+package korps;
 
 import io.vertx.core.Vertx;
 
 public final class Main {
-    public static final void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         System.out.println("hello, world!");
         Vertx.vertx().createHttpServer().requestHandler(req -> {
             req.response()

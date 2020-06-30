@@ -6,8 +6,8 @@ plugins {
 }
 
 application {
-//    mainClassName = "com.palantir.test.Main"
-    mainClassName = "korps.MainKt"
+//    mainClassName = "korps.MainKt"
+    mainClassName = "korps.Main"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -17,10 +17,12 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 configure<com.palantir.gradle.graal.GraalExtension> {
     mainClass(application.mainClassName)
     outputName("korps")
+    graalVersion("19.2.0")
 //    option("--report-unsupported-elements-at-runtime")
-//    option("--initialize-at-build-time")
-//    option("--no-fallback")
+    option("--no-fallback")
+    option("--allow-incomplete-classpath")
 //    option("--no-server")
+    option("--initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,org.slf4j.helpers.NOPLoggerFactory")
 }
 
 
@@ -33,7 +35,7 @@ dependencies {
     implementation("io.vertx:vertx-web:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin:3.9.1")
-
+    compileOnly("com.oracle.substratevm:svm:19.2.0")
 //    implementation("org.apache.logging.log4j:log4j-core:2.8.2")
 //    implementation("org.apache.logging.log4j:log4j-api:2.8.2")
 //    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.8.2")
