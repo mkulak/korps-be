@@ -6,8 +6,8 @@ plugins {
 }
 
 application {
-//    mainClassName = "korps.MainKt"
-    mainClassName = "korps.Main"
+    mainClassName = "korps.MainKt"
+//    mainClassName = "korps.Main"
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -35,7 +35,7 @@ dependencies {
     implementation("io.vertx:vertx-web:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin:3.9.1")
-    compileOnly("com.oracle.substratevm:svm:19.2.0")
+//    compileOnly("com.oracle.substratevm:svm:19.2.0")
 //    implementation("org.apache.logging.log4j:log4j-core:2.8.2")
 //    implementation("org.apache.logging.log4j:log4j-api:2.8.2")
 //    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.8.2")
