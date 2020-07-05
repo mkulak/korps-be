@@ -1,0 +1,8 @@
+[
+  {
+    "name" : "kotlin.internal.jdk8.JDK8PlatformImplementations",
+    "methods" : [
+      { "name" : "<init>", "parameterTypes" : [] }
+    ]
+  }
+]

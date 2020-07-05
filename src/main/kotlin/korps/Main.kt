@@ -45,18 +45,13 @@ fun main() = runBlocking {
     println("hello, world!2")
     val vertx = Vertx.vertx()
     val server = vertx.createHttpServer()
-    server.requestHandler { req ->
-        req.response().putHeader("content-type", "text/plain").end("Hello from Kotlin Vert.x!")
+    val rps = RpsServer()
+    server.requestHandler { rps.handle(it) }
+    server.webSocketHandler { socket -> rps.handle(socket) }
+    server.exceptionHandler {
+        it.printStackTrace()
     }
-    server.webSocketHandler { socket ->
-        socket.textMessageHandler {
-            println("server received $it")
-            socket.writeTextMessage(it.reversed())
-        }
-    }
-    CoroutineScope(vertx.dispatcher()).launch {
-        println("hello from vertx coroutine")
-    }
+
     server.listenAwait(8080)
     println("Server listening on http://localhost:8080/")
 //    System.exit(0)

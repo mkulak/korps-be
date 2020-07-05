@@ -35,6 +35,9 @@ dependencies {
     implementation("io.vertx:vertx-web:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.1")
     implementation("io.vertx:vertx-lang-kotlin:3.9.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
+
 //    compileOnly("com.oracle.substratevm:svm:19.2.0")
 //    implementation("org.apache.logging.log4j:log4j-core:2.8.2")
 //    implementation("org.apache.logging.log4j:log4j-api:2.8.2")
