@@ -17,7 +17,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 configure<com.palantir.gradle.graal.GraalExtension> {
     mainClass(application.mainClassName)
     outputName("korps")
-    graalVersion("19.2.0")
+    graalVersion("19.2.1")
 //    option("--report-unsupported-elements-at-runtime")
     option("--no-fallback")
     option("--allow-incomplete-classpath")
