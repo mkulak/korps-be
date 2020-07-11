@@ -21,6 +21,7 @@ configure<com.palantir.gradle.graal.GraalExtension> {
 //    option("--report-unsupported-elements-at-runtime")
     option("--no-fallback")
     option("--allow-incomplete-classpath")
+    option("-H:ReflectionConfigurationFiles=reflection-config.json")
 //    option("--no-server")
     option("--initialize-at-build-time=org.slf4j.LoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory,org.slf4j.helpers.NOPLoggerFactory")
 }

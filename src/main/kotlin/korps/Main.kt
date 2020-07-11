@@ -45,7 +45,7 @@ fun main() = runBlocking {
     println("hello, world!2")
     val vertx = Vertx.vertx()
     val server = vertx.createHttpServer()
-    val rps = RpsServer()
+    val rps = RpsServer(vertx)
     server.requestHandler { rps.handle(it) }
     server.webSocketHandler { socket -> rps.handle(socket) }
     server.exceptionHandler {

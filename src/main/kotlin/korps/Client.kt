@@ -9,8 +9,9 @@ import kotlin.random.Random
 fun main() = runBlocking {
     Vertx.vertx().use { vertx ->
         val client = vertx.createHttpClient()
-        val rpsClient = RpsClient(client)
+        val rpsClient = RpsClient(vertx, client)
         rpsClient.start()
+        Thread.sleep(Long.MAX_VALUE)
     }
 }
 
