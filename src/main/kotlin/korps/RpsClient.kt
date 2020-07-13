@@ -5,11 +5,10 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.vertx.core.Vertx
 import io.vertx.core.http.HttpClient
 import io.vertx.core.http.WebSocket
+import io.vertx.kotlin.core.http.writeTextMessageAwait
 import io.vertx.kotlin.coroutines.dispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
 
 
 class RpsClient(val vertx: Vertx, val client: HttpClient) {
@@ -36,12 +35,12 @@ class RpsClient(val vertx: Vertx, val client: HttpClient) {
             println("The end!")
             System.exit(0)
         }
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(vertx.dispatcher()).launch {
             val myId = ch.receive()
             println("My id: $myId")
             loop@ while (true) {
                 println("Choose Rock[1], Paper[2], Scissors[3]:")
-                val line = readLine()
+                val line = withContext(Dispatchers.IO) { readLine() }
                 val choice = when (line) {
                     "1" -> Choice.Rock
                     "2" -> Choice.Paper
@@ -51,10 +50,10 @@ class RpsClient(val vertx: Vertx, val client: HttpClient) {
                         continue@loop
                     }
                 }
-                ws.writeTextMessage(choice.name)
+                ws.writeTextMessageAwait(choice.name)
                 val state = objectMapper.readValue<RoundResult>(ch.receive())
                 println(if (state.winnerId == myId) "you won!" else if (state.winnerId == null) "draw" else "you lose!")
-                println(if (state.id1 == myId) "${state.score1}:${state.score2}" else "${state.score2}:${state.score1}")
+                println("Scores: ${state.scores}")
             }
         }
     }
