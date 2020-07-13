@@ -8,9 +8,7 @@ import io.vertx.kotlin.core.http.writeTextMessageAwait
 import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.selects.select
 import java.lang.Integer.toHexString
-import java.time.Duration
 import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random.Default.nextInt
 
@@ -21,33 +19,35 @@ class RpsServer(val vertx: Vertx) {
     val game = Game()
 
     fun handle(ws: ServerWebSocket) {
-        ws.accept()
         val id = randomId()
         println("connected: ${ws.path()} $id")
-        val channel = Channel<String>()
-        clients[id] = ConnectedClient(ws, id, channel)
-        if (game.players.size < 2) {
-            game.players += id
-            println("$id will be player number ${game.players.size}")
-        }
-        val scope = createScope()
+        clients[id] = ConnectedClient(ws, id)
+
+        onJoin(id)
         ws.textMessageHandler { msg ->
             println("Got $msg from $id")
-            scope.launch {
-                onMessage(id, msg)
-            }
+            onMessage(id, msg)
         }
         ws.closeHandler {
+            println("Disconnected $id")
+            onDisconnect(id)
             clients.remove(id)
-            scope.cancel()
-            channel.close()
         }
-        scope.launch {
-            ws.writeTextMessageAwait(id)
+        ws.writeTextMessage(id)
+    }
+
+    private fun onJoin(id: String) {
+        if (game.players.size < 2) {
+            game.players += id
+            println("$id joined as player ${game.players.size}")
         }
     }
 
-    private suspend fun onMessage(playerId: String, msg: String) {
+    private fun onDisconnect(id: String) {
+        game.players -= id
+    }
+
+    private fun onMessage(playerId: String, msg: String) {
         val choice = Choice.valueOf(msg)
         println("Received $choice from $playerId")
         if (playerId in game.players && playerId !in game.roundState) {
@@ -63,7 +63,7 @@ class RpsServer(val vertx: Vertx) {
             val payload = objectMapper.writeValueAsString(result)
             println("round end: $result")
             game.players.forEach { id ->
-                clients[id]?.ws?.writeTextMessageAwait(payload)
+                clients[id]?.ws?.writeTextMessage(payload)
             }
             game.roundState.clear()
         } else {
@@ -76,8 +76,6 @@ class RpsServer(val vertx: Vertx) {
         req.response().putHeader("content-type", "text/plain").end("Hello from Kotlin Vert.x!")
     }
 
-    private fun createScope() = CoroutineScope(vertx.dispatcher() + CoroutineExceptionHandler(::exceptionHandler))
-
     private fun exceptionHandler(ctx: CoroutineContext, t: Throwable) {
         t.printStackTrace()
     }
@@ -85,15 +83,13 @@ class RpsServer(val vertx: Vertx) {
 
 data class ConnectedClient(
     val ws: ServerWebSocket,
-    val id: String,
-    val channel: Channel<String>
+    val id: String
 )
 
-fun randomId() = toHexString(nextInt())
+fun randomId(): String = toHexString(nextInt())
 
 class Game {
     val players: MutableList<String> = ArrayList()
-    val spectators: MutableList<String> = ArrayList()
     val scores: MutableMap<String, Int> = HashMap()
     val roundState: MutableMap<String, Choice> = HashMap()
 }
