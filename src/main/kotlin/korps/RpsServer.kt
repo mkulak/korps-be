@@ -57,8 +57,16 @@ class RpsServer(val vertx: Vertx) {
         if (game.roundState.size == 2) {
             println("both players gave their choices")
             val (id1, id2) = game.players
-            val winnerId = id1
-            game.scores[winnerId] = game.scores.getOrDefault(winnerId, 0) + 1
+            val choice1 = game.roundState[id1]!!.ordinal
+            val choice2 = game.roundState[id2]!!.ordinal
+            val winnerId = when(choice1 - choice2) {
+                0 -> null
+                1, -2 -> id1
+                else -> id2
+            }
+            if (winnerId != null) {
+                game.scores[winnerId] = game.scores.getOrDefault(winnerId, 0) + 1
+            }
             val result = RoundResult(winnerId, game.scores)
             val payload = objectMapper.writeValueAsString(result)
             println("round end: $result")
