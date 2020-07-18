@@ -6,13 +6,14 @@ import kotlinx.coroutines.runBlocking
 
 
 fun main() = runBlocking {
-    println("hello, world!2")
+    println("korps be ver 0.1")
+    val port = (System.getenv("KORPS_PORT") ?: "8080").toInt()
     val vertx = Vertx.vertx()
     val server = vertx.createHttpServer()
-    val rps = RpsServer(vertx)
+    val rps = RpsServer(vertx, port)
     server.requestHandler(rps::handle)
         .webSocketHandler(rps::handle)
         .exceptionHandler { it.printStackTrace() }
-        .listenAwait(8080)
-    println("Server listening on http://localhost:8080/")
+        .listenAwait(port)
+    println("Server listening on http://localhost:$port/")
 }

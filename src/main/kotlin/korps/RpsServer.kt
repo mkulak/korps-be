@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random.Default.nextInt
 
 
-class RpsServer(val vertx: Vertx) {
+class RpsServer(val vertx: Vertx, val port: Int) {
     val clients = mutableMapOf<String, ConnectedClient>()
     val objectMapper = jacksonObjectMapper()
     val game = Game()
@@ -65,7 +65,7 @@ class RpsServer(val vertx: Vertx) {
                 else -> id2
             }
             if (winnerId != null) {
-                game.scores[winnerId] = game.scores.getOrDefault(winnerId, 0) + 1
+                game.scores.merge(winnerId, 1) { a, b -> a + b }
             }
             val result = RoundResult(winnerId, game.scores)
             val payload = objectMapper.writeValueAsString(result)
@@ -81,7 +81,25 @@ class RpsServer(val vertx: Vertx) {
 
     fun handle(req: HttpServerRequest) {
         println("Got http ${req.path()}")
-        req.response().putHeader("content-type", "text/plain").end("Hello from Kotlin Vert.x!")
+        val payload = """
+            <script>
+                var socket = new WebSocket("ws://localhost:$port")
+
+                socket.onmessage = function(event) {
+                    alert("Received data from websocket: " + event.data)
+                }
+
+                socket.onopen = function(event) {
+                    alert("Web Socket opened")
+                    socket.send("Rock")
+                }
+
+                socket.onclose = function(event) {
+                    alert("Web Socket closed")
+                }
+            </script>
+        """.trimIndent()
+        req.response().putHeader("content-type", "text/html").end(payload)
     }
 
     private fun exceptionHandler(ctx: CoroutineContext, t: Throwable) {
