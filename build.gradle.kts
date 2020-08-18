@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.palantir.gradle.graal.GraalExtension
+
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.0"
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
     id("com.palantir.graal") version "0.6.0"
@@ -7,14 +10,13 @@ plugins {
 
 application {
     mainClassName = "korps.MainKt"
-//    mainClassName = "korps.Main"
 }
 
-tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+tasks.withType<ShadowJar> {
     archiveBaseName.set("korps")
 }
 
-configure<com.palantir.gradle.graal.GraalExtension> {
+configure<GraalExtension> {
     mainClass(application.mainClassName)
     outputName("korps")
     graalVersion("19.2.1")
@@ -32,12 +34,11 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("io.vertx:vertx-web:3.9.1")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.1")
-    implementation("io.vertx:vertx-lang-kotlin:3.9.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.10.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.1")
+    implementation("io.vertx:vertx-web:3.9.2")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.2")
+    implementation("io.vertx:vertx-lang-kotlin:3.9.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.11.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.2")
 
 //    compileOnly("com.oracle.substratevm:svm:19.2.0")
 //    implementation("org.apache.logging.log4j:log4j-core:2.8.2")
