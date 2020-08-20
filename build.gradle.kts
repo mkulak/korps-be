@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm") version "1.4.0"
     application
     id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.palantir.graal") version "0.6.0"
+    id("com.palantir.graal") version "0.7.1"
 }
 
 application {
@@ -34,6 +34,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
     implementation("io.vertx:vertx-web:3.9.2")
     implementation("io.vertx:vertx-lang-kotlin-coroutines:3.9.2")
     implementation("io.vertx:vertx-lang-kotlin:3.9.2")
